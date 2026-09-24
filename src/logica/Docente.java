@@ -1,32 +1,59 @@
 package logica;
+
 import java.util.ArrayList;
+
 public class Docente extends Usuario {
-    private int id;
-    private ArrayList<Asignatura> asignaturas;
-    private ArrayList<Curso> cursos;
-    public Docente() {
-        this.asignaturas = new ArrayList<>();
-        this.cursos = new ArrayList<>();
-    }
-    public Docente(int id, String nombre, String apellido,
-                   String ci, String contrasena) {
 
-        super(nombre, apellido, ci, contrasena);
+    private final int id;
 
-        this.id = id;
-        this.asignaturas = new ArrayList<>();
-        this.cursos = new ArrayList<>();
-    }
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
+    Docente(int id, String nombre, String apellido, String ci,
+            String usuario, String contrasena) {
+        super(nombre, apellido, ci, usuario, contrasena);
+        if (id <= 0) {
+            throw new IllegalArgumentException("El id debe ser mayor que cero");
+        }
         this.id = id;
     }
-    public ArrayList<Asignatura> getAsignaturas() {
-        return asignaturas;
-    }
+
+    public int getId() { return id; }
+
     public ArrayList<Curso> getCursos() {
-        return cursos;
+        ArrayList<Curso> resultado = new ArrayList<>();
+        for (Curso curso : Cursos.listar()) {
+            if (curso.getDocente() == this) {
+                resultado.add(curso);
+            }
+        }
+        return resultado;
+    }
+
+    public ArrayList<Inscripcion> getInscripcionesDeMisCursos() {
+        ArrayList<Inscripcion> resultado = new ArrayList<>();
+        for (Inscripcion inscripcion : Inscripciones.listar()) {
+            if (inscripcion.getCurso().getDocente() == this) {
+                resultado.add(inscripcion);
+            }
+        }
+        return resultado;
+    }
+
+    public Calificacion registrarCalificacion(
+            int idInscripcion, double nota) {
+        return Calificaciones.registrar(this, idInscripcion, nota);
+    }
+
+    public boolean modificarCalificacion(
+            int idInscripcion, double nota) {
+        return Calificaciones.modificar(this, idInscripcion, nota);
+    }
+
+    public boolean eliminarCalificacion(int idInscripcion) {
+        return Calificaciones.eliminar(this, idInscripcion);
+    }
+
+    @Override
+    public String toString() {
+        return id + " - " + super.toString()
+                + " | usuario: " + getUsuario();
     }
 }

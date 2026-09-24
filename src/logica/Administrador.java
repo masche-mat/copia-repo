@@ -1,40 +1,142 @@
 package logica;
-public class Administrador extends Usuario {
-    private int id;
-    public Administrador() {
-    }
-    public Administrador(int id, String nombre, String apellido,
-                         String ci, String contrasena) {
 
-        super(nombre, apellido, ci, contrasena);
-        this.id = id;
-    }
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
-    public Estudiante crearEstudiante(int id, String nombre,
-                                      String apellido, String ci) {
+public final class Administrador extends Usuario {
 
-        return new Estudiante(id, nombre, apellido, ci);
-    }
-    public Docente crearDocente(int id, String nombre,
-                                String apellido, String ci,
-                                String contrasena) {
+    private static final Administrador INSTANCIA =
+            new Administrador();
 
-        return new Docente(id, nombre, apellido, ci, contrasena);
-    }
-    public void asignarCursoADocente(Curso curso, Docente docente) {
-        // lógica para realizar la asignación
-    }
-    public void asignarAsignaturaADocente(Asignatura asignatura,
-                                          Docente docente) {
-        // lógica para realizar la asignación
+    private Administrador() {
+        super("Administrador", "Sistema", "ADMIN",
+                "admin", "admin1234");
     }
 
-    public void inscribirEstudiante(Estudiante estudiante, Curso curso) {
-        // lógica para inscribir al estudiante
+    public static Administrador getInstancia() {
+        return INSTANCIA;
+    }
+
+    public void cambiarMiUsuario(String nuevoUsuario) {
+        String validado =
+                validarTexto(nuevoUsuario, "El usuario");
+
+        if (Docentes.existeUsuario(validado)) {
+            throw new IllegalArgumentException(
+                    "Ese usuario pertenece a un docente");
+        }
+        cambiarUsuario(validado);
+    }
+
+    public void cambiarMiContrasena(
+            String nuevaContrasena) {
+        cambiarContrasena(nuevaContrasena);
+    }
+
+    public void configurarEscala(
+            double minima, double maxima, double aprobacion) {
+        EscalaNotas.configurar(
+                minima, maxima, aprobacion);
+    }
+
+    public Estudiante crearEstudiante(
+            int id, String nombre, String apellido, String ci) {
+        return Estudiantes.registrar(
+                id, nombre, apellido, ci);
+    }
+
+    public boolean modificarEstudiante(
+            int id, String nombre, String apellido, String ci) {
+        return Estudiantes.modificar(
+                id, nombre, apellido, ci);
+    }
+
+    public boolean eliminarEstudiante(int id) {
+        return Estudiantes.eliminar(id);
+    }
+
+    public Docente crearDocente(
+            int id, String nombre, String apellido,
+            String ci, String usuario, String contrasena) {
+        return Docentes.registrar(
+                id, nombre, apellido, ci, usuario, contrasena);
+    }
+
+    public boolean modificarDocente(
+            int id, String nombre, String apellido,
+            String ci, String usuario) {
+        return Docentes.modificar(
+                id, nombre, apellido, ci, usuario);
+    }
+
+    public boolean cambiarContrasenaDocente(
+            int id, String contrasena) {
+        return Docentes.cambiarContrasena(
+                id, contrasena);
+    }
+
+    public boolean eliminarDocente(int id) {
+        return Docentes.eliminar(id);
+    }
+
+    public Asignatura crearAsignatura(
+            int id, String nombre, int creditos,
+            int cupo, EstadoAsignatura estado) {
+        return Asignaturas.registrar(
+                id, nombre, creditos, cupo, estado);
+    }
+
+    public boolean modificarAsignatura(
+            int id, String nombre, int creditos,
+            int cupo, EstadoAsignatura estado) {
+        return Asignaturas.modificar(
+                id, nombre, creditos, cupo, estado);
+    }
+
+    public boolean eliminarAsignatura(int id) {
+        return Asignaturas.eliminar(id);
+    }
+
+    public Curso crearCurso(
+            int id, String nombre, int idAsignatura) {
+        return Cursos.registrar(
+                id, nombre, idAsignatura);
+    }
+
+    public boolean modificarCurso(
+            int id, String nombre) {
+        return Cursos.modificarNombre(id, nombre);
+    }
+
+    public boolean eliminarCurso(int id) {
+        return Cursos.eliminar(id);
+    }
+
+    public boolean asignarDocenteACurso(
+            int idCurso, int idDocente) {
+        return Cursos.asignarDocente(
+                idCurso, idDocente);
+    }
+
+    public boolean quitarDocenteDeCurso(int idCurso) {
+        return Cursos.quitarDocente(idCurso);
+    }
+
+    public Inscripcion inscribirEstudiante(
+            int idEstudiante, int idCurso) {
+        return Inscripciones.registrar(
+                idEstudiante, idCurso);
+    }
+
+    public boolean cambiarEstudianteDeCurso(
+            int idInscripcion, int idNuevoCurso) {
+        return Inscripciones.cambiarCurso(
+                idInscripcion, idNuevoCurso);
+    }
+
+    public boolean eliminarInscripcion(int idInscripcion) {
+        return Inscripciones.eliminar(idInscripcion);
+    }
+
+    @Override
+    public String toString() {
+        return "Administrador | usuario: " + getUsuario();
     }
 }

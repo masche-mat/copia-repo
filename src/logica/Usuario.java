@@ -1,16 +1,28 @@
 package logica;
+
 public abstract class Usuario extends Persona {
+
+    private String usuario;
     private String contrasena;
-    public Usuario() {
-    }
-    public Usuario(String nombre, String apellido, String ci, String contrasena) {
+
+    protected Usuario(String nombre, String apellido, String ci,
+                      String usuario, String contrasena) {
         super(nombre, apellido, ci);
-        this.contrasena = contrasena;
+        cambiarUsuario(usuario);
+        cambiarContrasena(contrasena);
     }
-    public String getContrasena() {
-        return contrasena;
+
+    public String getUsuario() { return usuario; }
+
+    boolean verificarContrasena(String ingresada) {
+        return ingresada != null && contrasena.equals(ingresada);
     }
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
+
+    void cambiarUsuario(String usuario) {
+        this.usuario = validarTexto(usuario, "El usuario");
+    }
+
+    void cambiarContrasena(String contrasena) {
+        this.contrasena = validarTexto(contrasena, "La contraseña");
     }
 }
