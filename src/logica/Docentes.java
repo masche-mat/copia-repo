@@ -25,7 +25,7 @@ public final class Docentes {
         if (usuario == null) return null;
 
         for (Docente d : LISTA) {
-            if (d.getUsuario().equals(usuario.trim())) {
+            if (d.getUsuario().equalsIgnoreCase(Usuario.normalizarUsuario(usuario))) {
                 return d;
             }
         }
@@ -45,9 +45,9 @@ public final class Docentes {
 
     static Docente registrar(int id, String nombre,
                              String apellido, String ci,
-                             String usuario, String contrasena) {
+                             String contrasena) {
         Docente nuevo = new Docente(
-                id, nombre, apellido, ci, usuario, contrasena);
+                id, nombre, apellido, ci, contrasena);
 
         if (buscarPorId(id) != null) {
             throw new IllegalArgumentException(
@@ -62,9 +62,9 @@ public final class Docentes {
         }
         if (existeUsuario(nuevo.getUsuario())
                 || Administrador.getInstancia()
-                        .getUsuario().equals(nuevo.getUsuario())) {
+                        .getUsuario().equalsIgnoreCase(nuevo.getUsuario())) {
             throw new IllegalArgumentException(
-                    "Ese usuario ya está registrado");
+                    "Ya existe un docente con ese nombre y apellido de acceso");
         }
 
         LISTA.add(nuevo);
@@ -72,14 +72,13 @@ public final class Docentes {
     }
 
     static boolean modificar(int id, String nombre,
-                              String apellido, String ci,
-                              String usuario) {
+                              String apellido, String ci) {
         Docente d = buscarPorId(id);
         if (d == null) return false;
 
         String nuevaCi = Persona.validarTexto(ci, "La cédula");
         String nuevoUsuario =
-                Persona.validarTexto(usuario, "El usuario");
+                Docente.usuarioPara(nombre, apellido);
         Docente otro = buscarPorUsuario(nuevoUsuario);
 
         if (!d.getCi().equals(nuevaCi)
@@ -92,13 +91,12 @@ public final class Docentes {
         }
         if ((otro != null && otro != d)
                 || Administrador.getInstancia()
-                        .getUsuario().equals(nuevoUsuario)) {
+                        .getUsuario().equalsIgnoreCase(nuevoUsuario)) {
             throw new IllegalArgumentException(
-                    "Ese usuario ya está registrado");
+                    "Ya existe un docente con ese nombre y apellido de acceso");
         }
 
         d.actualizarDatos(nombre, apellido, nuevaCi);
-        d.cambiarUsuario(nuevoUsuario);
         return true;
     }
 

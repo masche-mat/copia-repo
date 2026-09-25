@@ -14,15 +14,26 @@ public abstract class Usuario extends Persona {
 
     public String getUsuario() { return usuario; }
 
+    public static String normalizarUsuario(String valor) {
+        return valor == null ? "" : valor.trim().replaceAll("\\s+", " ");
+    }
+
+    public static void validarContrasena(String valor) {
+        if (valor == null || valor.trim().isEmpty()) {
+            throw new IllegalArgumentException("La contraseña no puede estar vacía");
+        }
+    }
+
     boolean verificarContrasena(String ingresada) {
         return ingresada != null && contrasena.equals(ingresada);
     }
 
     void cambiarUsuario(String usuario) {
-        this.usuario = validarTexto(usuario, "El usuario");
+        this.usuario = normalizarUsuario(validarTexto(usuario, "El usuario"));
     }
 
     void cambiarContrasena(String contrasena) {
-        this.contrasena = validarTexto(contrasena, "La contraseña");
+        validarContrasena(contrasena);
+        this.contrasena = contrasena;
     }
 }

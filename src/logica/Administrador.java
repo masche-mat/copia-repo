@@ -54,16 +54,16 @@ public final class Administrador extends Usuario {
 
     public Docente crearDocente(
             int id, String nombre, String apellido,
-            String ci, String usuario, String contrasena) {
+            String ci, String contrasena) {
         return Docentes.registrar(
-                id, nombre, apellido, ci, usuario, contrasena);
+                id, nombre, apellido, ci, contrasena);
     }
 
     public boolean modificarDocente(
             int id, String nombre, String apellido,
-            String ci, String usuario) {
+            String ci) {
         return Docentes.modificar(
-                id, nombre, apellido, ci, usuario);
+                id, nombre, apellido, ci);
     }
 
     public boolean cambiarContrasenaDocente(
